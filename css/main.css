@@ -1,0 +1,88 @@
+/* creating grid and adjusting sizes */
+/* grid-template-areas put all within in a single column in order and their size is relative to the size listed in grid-template-areas and grid-template-columns*/
+/* mobile first - single column */
+/* number of columns = number of times list xfr and relative width between them is the x value  */
+body {
+  height: 100vh;
+  margin: 0;
+  font-family: Helvetica;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-areas:
+    "1 2 dc dc 5 6"
+    "7 8 9 10 11 12"
+    "wcb2 p2cards 15 16 p1cards wcb1"
+    "wcb2 p2cards 21 22 p1cards wcb1"
+    "p2button p2button 27 28 p1button p1button";
+}
+
+#dc {
+  grid-area: dc;
+  background-color: red;
+}
+#p2cards {
+  grid-area: p2cards;
+  background-color: blue;
+}
+#p1cards {
+  grid-area: p1cards;
+  background-color: green;
+}
+#p2b {
+  grid-area: p2button;
+  background-color: greenyellow;
+}
+#p1b {
+  grid-area: p1button;
+  background-color: fuchsia;
+}
+#p1cards,
+#p2cards {
+  display: flex;
+}
+#w2,
+#w1 {
+  background-color: white;
+}
+#cb2,
+#cb1 {
+  background-color: wheat;
+}
+#p2c,
+#p1c {
+  background-color: yellow;
+}
+#wcb2 {
+  grid-area: wcb2;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  background-color: teal;
+}
+#wcb1 {
+  grid-area: wcb1;
+  background-color: teal;
+}
+#wcb2,
+#wcb1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "w"
+    "cb";
+}
+#p2cards,
+#dc,
+#w2,
+#cb2,
+#p1cards,
+#w1,
+#cb1,
+#p2b,
+#p1b {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

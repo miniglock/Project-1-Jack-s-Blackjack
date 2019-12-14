@@ -1,9 +1,11 @@
+// if i use jquery can use .toggleClass() to assign and unassign class in order to check turn. Use with .hasClass()
+
 /*----- constants -----*/
 random name array for player names
 
 
 /*----- app's state (variables) -----*/
-current bet p1, current bet p2, p1 cards, p2 cards, dealer cards, the deck, game active 
+current bet p1, current bet p2, p1 cards, p2 cards, dealer cards, the deck, deal active 
 
 
 /*----- cached DOM element references -----*/
@@ -13,13 +15,20 @@ current bet p1, current bet p2, p1 cards, p2 cards, dealer cards, the deck, game
 /*----- functions -----*/
 run init
 
-shuffle
-    shuffle deck (array.sort(() => Math.random() - 0.5))
-    call deal
+init
+    reset all state variables to default
+    activate bet phase
     render
+
+const shuffle = () =>{
+    deckArray = deckArray.sort(() => Math.random() - 0.5)
+    deal()
+    render()
+}
 
 deal 
     deal 1 card down and 1 card up to players and dealer from deck
+    set all card states
     if dealer card2 === ace call insurance
     if dealer card total === 21 call lose
     call if blackjack
@@ -28,19 +37,20 @@ deal
 bet
     update current bet by 5 for appropriate player
     check if current bet > current wallet
+    reduce player wallet by player bet amount
+    update play button state
     render
 
 play
-    change game active to yes
-    reduce player wallet by player bet amount
+    change deal active to yes
     call shuffle
     render
 
 insurance
     pop insurance button
-    if dealer card1 + card2 === 21
+    if dealer has blackjack
+    match bet amount and reduce wallet
     call payout insurance
-    call if dealer blackjack
     render
 
 double down
@@ -92,8 +102,5 @@ lose
 
 
 render 
-    render all necessary state variables
+    take current state variables and update ui
 
-
-initialize
-    reset all state variables to default
