@@ -9,7 +9,13 @@ current bet p1, current bet p2, p1 cards, p2 cards, dealer cards, the deck, deal
 
 
 /*----- cached DOM element references -----*/
-
+let dealerCards = document.getElementById("dc")
+let p2Cards = document.getElementById("p2cards")
+let p2Wallet = document.getElementById("w2")
+let p2Bet = document.getElementById("cb2")
+let p1Cards = document.getElementById("p1cards")
+let p2Wallet = document.getElementById("w1")
+let p2Bet = document.getElementById("cb1")
 /*----- event listeners -----*/
 
 /*----- functions -----*/
@@ -21,7 +27,7 @@ init
     render
 
 const shuffle = () =>{
-    deckArray = deckArray.sort(() => Math.random() - 0.5)
+    let deckArray = deckArray.sort(() => Math.random() - 0.5)
     deal()
     render()
 }

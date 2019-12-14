@@ -27,7 +27,7 @@ body {
 }
 #p1cards {
   grid-area: p1cards;
-  background-color: green;
+  background-color: blue;
 }
 #p2b {
   grid-area: p2button;
@@ -43,7 +43,7 @@ body {
 }
 #w2,
 #w1 {
-  background-color: white;
+  background-color: teal;
 }
 #cb2,
 #cb1 {
@@ -85,4 +85,49 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+#p2b {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "1"
+    "2";
+}
+#p2b1 {
+  grid-area: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+#p2b2 {
+  grid-area: 2;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+#p1b {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "1"
+    "2";
+}
+#p1b1 {
+  grid-area: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+#p1b2 {
+  grid-area: 2;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.button {
+  width: 80px;
+  height: 40px;
+  border-color: black;
 }
