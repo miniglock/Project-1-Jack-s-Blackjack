@@ -23,11 +23,35 @@ body {
 }
 #p2cards {
   grid-area: p2cards;
-  background-color: blue;
+  background-color: lightblue;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 2fr 1fr;
+  grid-template-areas:
+    "1"
+    "2";
 }
 #p1cards {
   grid-area: p1cards;
-  background-color: blue;
+  background-color: lightblue;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 2fr 1fr;
+  grid-template-areas:
+    "1"
+    "2";
+}
+#p2img {
+  grid-area: 1;
+}
+#p2total {
+  grid-area: 2;
+}
+#p1img {
+  grid-area: 1;
+}
+#p1total {
+  grid-area: 2;
 }
 #p2b {
   grid-area: p2button;
@@ -36,10 +60,6 @@ body {
 #p1b {
   grid-area: p1button;
   background-color: fuchsia;
-}
-#p1cards,
-#p2cards {
-  display: flex;
 }
 #w2,
 #w1 {
@@ -73,15 +93,17 @@ body {
     "w"
     "cb";
 }
-#p2cards,
 #dc,
 #w2,
 #cb2,
-#p1cards,
 #w1,
 #cb1,
 #p2b,
-#p1b {
+#p1b,
+#p2img,
+#p2total,
+#p1img,
+#p1total {
   display: flex;
   justify-content: center;
   align-items: center;
