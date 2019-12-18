@@ -1,7 +1,5 @@
-// // if i use jquery can use .toggleClass() to assign and unassign class in order to check turn. Use with .hasClass()
-
 // /*----- constants -----*/
-// random name array for player names
+
 let deck = [
   {
     value: 2,
@@ -422,23 +420,22 @@ const deck1 = [
     image: "card-deck/images/spades/spades-A.svg"
   }
 ];
+const cardBack = "card-deck/images/backs/blue.svg";
 
 // /*----- app's state (variables) -----*/
-// current bet p1, current bet p2, p1 cards, p2 cards, dealer cards, the deck, deal active
+
 let p1CB = 0;
 let p2CB = 0;
-let p1w = 100;
-let p2w = 100;
+let p1W = 100;
+let p2W = 100;
 let dealerTotal = null;
 const player1Cards = {
   value: [],
-  image: [],
-  turnComplete: false
+  image: []
 };
 const player2Cards = {
   value: [],
-  image: [],
-  turnComplete: false
+  image: []
 };
 const dealerHand = {
   value: [],
@@ -446,8 +443,17 @@ const dealerHand = {
 };
 let p1Total = 0;
 let p2Total = 0;
-
+let isPlayer1NotBusted = true;
+let isPlayer2NotBusted = true;
+let isPlayer1NotStay = true;
+let isPlayer2NotStay = true;
+let isDealerStay = true;
+let isPlayer1NotBlackjack = true;
+let isPlayer2NotBlackjack = true;
+let player1DDActive = false;
+let player2DDActive = false;
 // /*----- cached DOM element references -----*/
+
 let dealerCards = document.getElementById("dc");
 let dcard1 = document.getElementById("dcard1");
 let dcard2 = document.getElementById("dcard2");
@@ -459,7 +465,7 @@ let p2Wallet = document.getElementById("w2");
 let p2Bet = document.getElementById("cb2");
 let p1Cards = document.getElementById("p1cards");
 let p1Card1 = document.getElementById("p1card1");
-let p1card2 = document.getElementById("p1card2");
+let p1Card2 = document.getElementById("p1card2");
 let p1Wallet = document.getElementById("w1");
 let p1Bet = document.getElementById("cb1");
 let stay1 = document.getElementById("stay1");
@@ -476,26 +482,31 @@ let ins2 = document.getElementById("ins2");
 let play2 = document.getElementById("play2");
 let player1Total = document.getElementById("p1total");
 let player2Total = document.getElementById("p2total");
+
 // /*----- event listeners -----*/
+
 // p1 buttons
 document.getElementById("stay1").addEventListener("click", player1Stay);
-// document.getElementById("DD1").addEventListener("click");
-document.getElementById("hit1").addEventListener("click", hitP1);
+document.getElementById("DD1").addEventListener("click", player1DD);
+document.getElementById("hit1").addEventListener("click", player1Hit);
 document.getElementById("bet1").addEventListener("click", betP1);
-document.getElementById("ins1").addEventListener("click", insurance);
+// document.getElementById("ins1").addEventListener("click", insurance);
 document.getElementById("play1").addEventListener("click", player1Play);
+
 // // p2 buttons
-// document.getElementById("stay2").addEventListener("click");
-// document.getElementById("DD2").addEventListener("click");
-document.getElementById("hit2").addEventListener("click", hitP2);
+document.getElementById("stay2").addEventListener("click", player2Stay);
+document.getElementById("DD2").addEventListener("click", player2DD);
+document.getElementById("hit2").addEventListener("click", player2Hit);
 document.getElementById("bet2").addEventListener("click", betP2);
 // document.getElementById("ins2").addEventListener("click");
 document.getElementById("play2").addEventListener("click", player2Play);
 
 // /*----- functions -----*/
+
 init();
+
 function init() {
-  deck = deck1;
+  deck = deck1.map(x => x);
   bet1.disabled = false;
   play1.disabled = true;
   DD1.disabled = true;
@@ -515,51 +526,56 @@ function init() {
   p1Total = 0;
   p2Total = 0;
 }
-// init
-//     reset all state variables to default
-//     activate bet phase
-//     render
+
+function player1AceOr1() {
+  if (player1Cards.value.reduce((a, b) => a + b, 0) > 21) {
+    let hold = player1Cards.value.indexOf(11);
+    player1Cards.value[hold] = 1;
+  }
+}
+
+function player2AceOr1() {
+  if (player2Cards.value.reduce((a, b) => a + b, 0) > 21) {
+    let hold = player2Cards.value.indexOf(11);
+    player2Cards.value[hold] = 1;
+  }
+}
+
+function dealerAceOr1() {
+  if (dealerHand.value.reduce((a, b) => a + b, 0) > 21) {
+    let hold = dealerHand.value.indexOf(11);
+    dealerHand.value[hold] = 1;
+  }
+}
 
 function hitD() {
+  console.log("dealer hits");
   dealerHand.value.push(deck[0].value);
   dealerHand.image.push(deck[0].image);
   dcard1.src = dealerHand.image[dealerHand.image.length - 1];
-  dealerPlay();
   deck.shift();
-  //   player1Cards.value.push(deck[0].value);
-  //   player1Cards.image.push(deck[0].image);
-  //   p1Card1.src = player1Cards.image[player1Cards.image.length - 1];
-  //   deck.shift();
+  dealerAceOr1();
+  dealerPlay();
 }
-function hitP1() {
+
+function player1Hit() {
+  DD1.disabled = true;
   player1Cards.value.push(deck[0].value);
   player1Cards.image.push(deck[0].image);
   p1Card1.src = player1Cards.image[player1Cards.image.length - 1];
   deck.shift();
+  player1AceOr1();
   render();
 }
-function hitP2() {
+
+function player2Hit() {
+  DD2.disabled = true;
+  ``;
   player2Cards.value.push(deck[0].value);
   player2Cards.image.push(deck[0].image);
   p2Card1.src = player2Cards.image[player2Cards.image.length - 1];
   deck.shift();
-  render();
-}
-// hit
-//     add one card to player cards from deck
-//     if card total > 21 call stay call lose
-//     render
-
-function dealerPlay() {
-  dcard2.src = dealerHand.image[1];
-  dealerTotal = dealerHand.value.reduce((a, b) => a + b, 0);
-  if (dealerTotal < 17) {
-    hitD();
-    console.log("oh yeah");
-  } else {
-    console.log("oh no");
-    // dealerStay();
-  }
+  player2AceOr1();
   render();
 }
 
@@ -571,7 +587,7 @@ function deal() {
   if (p2CB > 0) {
     player2Cards.value.push(deck[0].value);
     player2Cards.image.push(deck[0].image);
-    p2card1.src = player2Cards.image[0];
+    p2Card1.src = player2Cards.image[0];
     deck.shift();
   }
   dealerHand.value.push(deck[0].value);
@@ -580,12 +596,12 @@ function deal() {
   deck.shift();
   player1Cards.value.push(deck[0].value);
   player1Cards.image.push(deck[0].image);
-  p1card2.src = player1Cards.image[1];
+  p1Card2.src = player1Cards.image[1];
   deck.shift();
   if (p2CB > 0) {
     player2Cards.value.push(deck[0].value);
     player2Cards.image.push(deck[0].image);
-    p2card2.src = player2Cards.image[1];
+    p2Card2.src = player2Cards.image[1];
     deck.shift();
   }
   dealerHand.value.push(deck[0].value);
@@ -600,34 +616,40 @@ function shuffle() {
 
 function betP1() {
   p1CB += 5;
-  p1w -= 5;
+  p1W -= 5;
   p1Bet.innerText = p1CB;
-  p1Wallet.innerText = p1w;
+  p1Wallet.innerText = p1W;
   if (p1CB > 0) {
     play1.disabled = false;
   }
-  if (p1w === 0) {
+  if (p1W === 0) {
     bet1.disabled = true;
   }
 }
+
 function betP2() {
   p2CB += 5;
-  p2w -= 5;
+  p2W -= 5;
   p2Bet.innerText = p2CB;
-  p2Wallet.innerText = p2w;
-  //   if (p2CB > 0) {
-  //     play2.disabled = false;
-  //   }
-  if (p2w === 0) {
+  p2Wallet.innerText = p2W;
+  if (p2W === 0) {
     bet2.disabled = true;
   }
 }
-// bet
-//     update current bet by 5 for appropriate player
-//     check if current bet > current wallet
-//     reduce player wallet by player bet amount
-//     update play button state
-//     render
+
+function dealerPlay() {
+  dcard2.src = dealerHand.image[1];
+  dealerTotal = dealerHand.value.reduce((a, b) => a + b, 0);
+  if (dealerTotal > 21) {
+    console.log("dealer bust");
+  }
+  if (dealerTotal < 17) {
+    setTimeout(hitD, 2000);
+  } else if (isDealerStay) {
+    dealerStay();
+  }
+  render();
+}
 
 function player1Play() {
   bet1.disabled = true;
@@ -636,9 +658,12 @@ function player1Play() {
   ins1.disabled = false;
   hit1.disabled = false;
   stay1.disabled = false;
+  bet2.disabled = true;
   shuffle();
   render();
+  player1Blackjack();
 }
+
 function player2Play() {
   if (p1Total > 0) {
     bet2.disabled = true;
@@ -647,17 +672,12 @@ function player2Play() {
     ins2.disabled = false;
     hit2.disabled = false;
     stay2.disabled = false;
+    player2Blackjack();
     render();
   }
 }
-// play
-//     change deal active to yes
-//     call shuffle
-//     render
 
-function insurance() {
-  dealerPlay();
-}
+// function insurance() {}
 // insurance
 //     pop insurance button
 //     if dealer has blackjack
@@ -665,6 +685,24 @@ function insurance() {
 //     call payout insurance
 //     render
 
+function player1DD() {
+  player1DDActive = true;
+  p1W -= p1CB;
+  p1Wallet.innerText = p1W;
+  p1CB *= 2;
+  p1Bet.innerText = p1CB;
+  player1Hit();
+  player1Stay();
+}
+function player2DD() {
+  player2DDActive = true;
+  p2W -= p2CB;
+  p2Wallet.innerText = p2W;
+  p2CB *= 2;
+  p2Bet.innerText = p2CB;
+  player2Hit();
+  player2Stay();
+}
 // double down
 //     pop double down button
 //     if yes double player current bet
@@ -673,36 +711,65 @@ function insurance() {
 //     call stay
 //     render
 
+function dealerStay() {
+  console.log("dealer stays");
+  isDealerStay = false;
+  setTimeout(refresh, 3000);
+}
+
 function player1Stay() {
+  isPlayer1NotStay = false;
   if (p2CB > 0) {
     play2.disabled = false;
+  } else {
+    dealerPlay();
   }
   bet1.disabled = true;
-  play1.disabled = true;
   DD1.disabled = true;
-  ins1.disabled = false;
+  ins1.disabled = true;
   hit1.disabled = true;
   stay1.disabled = true;
-  bust();
+}
+
+function player2Stay() {
+  isPlayer2NotStay = false;
+  bet2.disabled = true;
+  DD2.disabled = true;
+  ins2.disabled = true;
+  hit2.disabled = true;
+  stay2.disabled = true;
   dealerPlay();
 }
-//     if player 1 && 2 players player 2 turn
-//     call check for bust
-//     call dealer play
-//     render
 
-// if blackjack
-//     check if p1/p2 have blackjack
-//     call payout blackjack
-//     render
+function player1Blackjack() {
+  if (
+    p1Total === 21 &&
+    dealerTotal !== 21 &&
+    player1Cards.value.length === 2 &&
+    isPlayer1NotBlackjack
+  ) {
+    isPlayer1NotBlackjack = false;
+    p1W += Math.ceil(p1CB * 2.5);
+    console.log("p1Whatup");
+    p1Wallet.innerText = p1W;
+    p1Bet.innerText = 0;
+  }
+}
 
-// check for bust
-//     if >21 call lose
-// payout blackjack
-//     calculate appropriate amount
-//     add amount to wallet
-//     change game active to no
-//     render
+function player2Blackjack() {
+  if (
+    p2Total === 21 &&
+    dealerTotal !== 21 &&
+    player2Cards.value.length === 2 &&
+    isPlayer2NotBlackjack
+  ) {
+    isPlayer2NotBlackjack = false;
+    p2W += math.ceil(p2CB * 2.5);
+    console.log("p2Whatup");
+    p2Wallet.innerText = p2W;
+    p2Bet.innerText = 0;
+  }
+}
 
 // payout insurance
 //     calculate appropriate amount
@@ -720,21 +787,23 @@ function player1Stay() {
 //     if player card total === dealer card total || player && dealer bust increase wallet by current bet
 //     render
 
-function p1Lose() {
+function player1Lose() {
   bet1.disabled = true;
-  play1.disabled = true;
+  //   play1.disabled = true;
   DD1.disabled = true;
-  //   ins1.disabled = true;
+  ins1.disabled = true;
   hit1.disabled = true;
   stay1.disabled = true;
+  isPlayer1NotBusted = false;
 }
-function p2Lose() {
+function player2Lose() {
   bet2.disabled = true;
-  play2.disabled = true;
+  //   play2.disabled = true;
   DD2.disabled = true;
   ins2.disabled = true;
   hit2.disabled = true;
   stay2.disabled = true;
+  isPlayer2NotBusted = false;
 }
 // lose
 //     alert a message you lost
@@ -745,20 +814,54 @@ function render() {
   p2Total = player2Cards.value.reduce((a, b) => a + b, 0);
   player2Total.innerText = p2Total;
   dTotal.innerText = dealerTotal;
-  if (p1Total > 21) {
-    console.log("bust");
+
+  if (p1Total > 21 && isPlayer1NotBusted) {
+    console.log("Player 1 bust");
+    player1Lose();
     player1Stay();
-    p1Lose();
-  } else if (p1Total === 21) {
-    hit1.disabled = true;
   }
-  if (p2Total > 21) {
-    console.log("bust");
-    // player2Stay();
-    p2Lose();
-  } else if (p2Total === 21) {
-    hit2.disabled = true;
+  if (p1Total === 21 && isPlayer1NotStay) {
+    player1Stay();
+  }
+  if (p2Total > 21 && isPlayer2NotBusted) {
+    console.log("Player 2 bust");
+    player2Lose();
+    player2Stay();
+  }
+  if (p2Total === 21 && isPlayer2NotStay) {
+    player2Stay();
   }
 }
-// render
-//     take current state variables and update
+
+function refresh() {
+  isPlayer1NotBlackjack = true;
+  isPlayer1NotBusted = true;
+  isPlayer1NotStay = true;
+  isPlayer2NotBlackjack = true;
+  isPlayer2NotBusted = true;
+  isPlayer2NotStay = true;
+  isDealerStay = true;
+  deck = deck1.map(x => x);
+  bet1.disabled = false;
+  bet2.disabled = false;
+  p1CB = 0;
+  p1Bet.innerText = p1CB;
+  p2CB = 0;
+  p2Bet.innerText = p2CB;
+  //   setTimeout(resetCards, 5000);
+}
+
+function resetCards() {
+  p1Card1.src = cardBack;
+  p1Card2.src = cardBack;
+  p2Card1.src = cardBack;
+  p2Card2.src = cardBack;
+  dcard1.src = cardBack;
+  dcard2.src = cardBack;
+  player1Cards.value = [];
+  player1Cards.image = [];
+  player2Cards.value = [];
+  player2Cards.image = [];
+  dealerHand.value = [];
+  dealerHand.image = [];
+}
