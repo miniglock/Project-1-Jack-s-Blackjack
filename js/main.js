@@ -452,6 +452,7 @@ let isPlayer1NotBlackjack = true;
 let isPlayer2NotBlackjack = true;
 let player1DDActive = false;
 let player2DDActive = false;
+let isDealerBusted = false;
 // /*----- cached DOM element references -----*/
 
 let dealerCards = document.getElementById("dc");
@@ -482,6 +483,8 @@ let ins2 = document.getElementById("ins2");
 let play2 = document.getElementById("play2");
 let player1Total = document.getElementById("p1total");
 let player2Total = document.getElementById("p2total");
+let p1Mes = document.getElementById("p1message");
+let p2Mes = document.getElementById("p2message");
 
 // /*----- event listeners -----*/
 
@@ -584,6 +587,9 @@ function deal() {
   player1Cards.image.push(deck[0].image);
   p1Card1.src = player1Cards.image[0];
   deck.shift();
+  if (p2CB === 0) {
+    p2Mes.innerText = "Too late. Join next time";
+  }
   if (p2CB > 0) {
     player2Cards.value.push(deck[0].value);
     player2Cards.image.push(deck[0].image);
@@ -615,6 +621,7 @@ function shuffle() {
 }
 
 function betP1() {
+  p1Mes.innerText = "";
   p1CB += 5;
   p1W -= 5;
   p1Bet.innerText = p1CB;
@@ -628,6 +635,7 @@ function betP1() {
 }
 
 function betP2() {
+  p2Mes.innerText = "";
   p2CB += 5;
   p2W -= 5;
   p2Bet.innerText = p2CB;
@@ -642,6 +650,7 @@ function dealerPlay() {
   dealerTotal = dealerHand.value.reduce((a, b) => a + b, 0);
   if (dealerTotal > 21) {
     console.log("dealer bust");
+    isDealerBusted = true;
   }
   if (dealerTotal < 17) {
     setTimeout(hitD, 2000);
@@ -713,8 +722,10 @@ function player2DD() {
 
 function dealerStay() {
   console.log("dealer stays");
+  console.log(dealerHand);
   isDealerStay = false;
-  setTimeout(refresh, 3000);
+  checkWin();
+  setTimeout(refresh, 4000);
 }
 
 function player1Stay() {
@@ -750,7 +761,7 @@ function player1Blackjack() {
   ) {
     isPlayer1NotBlackjack = false;
     p1W += Math.ceil(p1CB * 2.5);
-    console.log("p1Whatup");
+    p1Mes.innerText = `Player 1 Got Blackjack!`;
     p1Wallet.innerText = p1W;
     p1Bet.innerText = 0;
   }
@@ -764,8 +775,8 @@ function player2Blackjack() {
     isPlayer2NotBlackjack
   ) {
     isPlayer2NotBlackjack = false;
-    p2W += math.ceil(p2CB * 2.5);
-    console.log("p2Whatup");
+    p2W += Math.ceil(p2CB * 2.5);
+    p2Mes.innerText = `Player 2 Got Blackjack!`;
     p2Wallet.innerText = p2W;
     p2Bet.innerText = 0;
   }
@@ -786,10 +797,51 @@ function player2Blackjack() {
 // tie
 //     if player card total === dealer card total || player && dealer bust increase wallet by current bet
 //     render
+function checkWin() {
+  if (
+    (p1Total < 22 &&
+      p1Total > dealerTotal &&
+      isPlayer1NotBusted &&
+      isPlayer1NotBlackjack) ||
+    (isPlayer1NotBusted && isPlayer1NotBlackjack && isDealerBusted)
+  ) {
+    p1CB *= 2;
+    p1W += p1CB;
+    p1Wallet.innerText = p1W;
+    p1Mes.innerText = `Player 1 Won ${p1CB}`;
+  }
+  if (
+    (p2Total < 22 &&
+      p2Total > dealerTotal &&
+      isPlayer2NotBusted &&
+      isPlayer2NotBlackjack) ||
+    (isPlayer2NotBusted && isPlayer2NotBlackjack && isDealerBusted)
+  ) {
+    p2CB *= 2;
+    p2W += p2CB;
+    p2Wallet.innerText = p2W;
+    p2Mes.innerText = `Player 2 Won ${p2CB}`;
+  }
+  if (p1Total === dealerTotal && p1Total < 22) {
+    p1W += p1CB;
+    p1Wallet.innerText = p1W;
+    p1Mes.innerText = `Player 1 Tied`;
+  }
+  if (p2Total === dealerTotal && p2Total < 22) {
+    p2W += p2CB;
+    p2Wallet.innerText = p2W;
+    p2Mes.innerText = `Player 2 Tied`;
+  }
+  if (p1Total < dealerTotal && dealerTotal < 22) {
+    p1Mes.innerText = `Player 1 Lost`;
+  }
+  if (p2Total < dealerTotal && dealerTotal < 22) {
+    p2Mes.innerText = `Player 2 Lost`;
+  }
+}
 
 function player1Lose() {
   bet1.disabled = true;
-  //   play1.disabled = true;
   DD1.disabled = true;
   ins1.disabled = true;
   hit1.disabled = true;
@@ -798,15 +850,12 @@ function player1Lose() {
 }
 function player2Lose() {
   bet2.disabled = true;
-  //   play2.disabled = true;
   DD2.disabled = true;
   ins2.disabled = true;
   hit2.disabled = true;
   stay2.disabled = true;
   isPlayer2NotBusted = false;
 }
-// lose
-//     alert a message you lost
 
 function render() {
   p1Total = player1Cards.value.reduce((a, b) => a + b, 0);
@@ -816,7 +865,7 @@ function render() {
   dTotal.innerText = dealerTotal;
 
   if (p1Total > 21 && isPlayer1NotBusted) {
-    console.log("Player 1 bust");
+    p1Mes.innerText = `Player 1 Busted`;
     player1Lose();
     player1Stay();
   }
@@ -824,7 +873,7 @@ function render() {
     player1Stay();
   }
   if (p2Total > 21 && isPlayer2NotBusted) {
-    console.log("Player 2 bust");
+    p2Mes.innerText = `Player 2 Busted`;
     player2Lose();
     player2Stay();
   }
@@ -841,6 +890,7 @@ function refresh() {
   isPlayer2NotBusted = true;
   isPlayer2NotStay = true;
   isDealerStay = true;
+  isDealerBusted = false;
   deck = deck1.map(x => x);
   bet1.disabled = false;
   bet2.disabled = false;
@@ -848,7 +898,9 @@ function refresh() {
   p1Bet.innerText = p1CB;
   p2CB = 0;
   p2Bet.innerText = p2CB;
-  //   setTimeout(resetCards, 5000);
+  p1Mes.innerText = "Click bet to start";
+  p2Mes.innerText = "Click bet to join the game";
+  setTimeout(resetCards, 1000);
 }
 
 function resetCards() {

@@ -11,7 +11,7 @@ body {
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   grid-template-areas:
     "1 2 dc dc 5 6"
-    "7 8 9 10 11 12"
+    "p2m p2m 9 10 p1m p1m"
     "wcb2 p2cards 15 16 p1cards wcb1"
     "wcb2 p2cards 21 22 p1cards wcb1"
     "p2button p2button 27 28 p1button p1button";
@@ -20,6 +20,12 @@ body {
 #dc {
   grid-area: dc;
   background-color: red;
+}
+#p2message {
+  grid-area: p2m;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 #p2cards {
   grid-area: p2cards;
@@ -30,6 +36,12 @@ body {
   grid-template-areas:
     "1"
     "2";
+}
+#p1message {
+  grid-area: p1m;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 #p1cards {
   grid-area: p1cards;
