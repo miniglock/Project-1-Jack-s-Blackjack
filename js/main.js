@@ -1,4 +1,5 @@
 // /*----- constants -----*/
+const cardBack = "card-deck/images/backs/blue.svg";
 
 let deck = [
   {
@@ -420,7 +421,6 @@ const deck1 = [
     image: "card-deck/images/spades/spades-A.svg"
   }
 ];
-const cardBack = "card-deck/images/backs/blue.svg";
 
 // /*----- app's state (variables) -----*/
 
@@ -628,7 +628,7 @@ function betP1() {
     bet1.disabled = true;
     return;
   }
-  p1Mes.innerText = "";
+  p1Mes.innerText = "When betting is done press play";
   p1CB += 5;
   p1W -= 5;
   p1Bet.innerText = p1CB;
@@ -643,7 +643,7 @@ function betP2() {
     bet2.disabled = true;
     return;
   }
-  p2Mes.innerText = "";
+  p2Mes.innerText = "When betting is done press play";
   p2CB += 5;
   p2W -= 5;
   p2Bet.innerText = p2CB;
@@ -678,6 +678,7 @@ function player1Play() {
     dealerTotal = 0;
     isRoundEnd = false;
   }
+  p1Mes.innerText = "";
   shuffle();
   player1AceOr1();
   player2AceOr1();
