@@ -756,22 +756,32 @@ function player2PayoutInsurance() {
 }
 
 function player1DD() {
-  player1DDActive = true;
-  p1W -= p1CB;
-  p1Wallet.innerText = p1W;
-  p1CB *= 2;
-  p1Bet.innerText = p1CB;
-  player1Hit();
-  player1Stay();
+  if (p1W - p1CB > 0) {
+    player1DDActive = true;
+    p1W -= p1CB;
+    p1Wallet.innerText = p1W;
+    p1CB *= 2;
+    p1Bet.innerText = p1CB;
+    player1Hit();
+    player1Stay();
+  } else {
+    p1Mes.innerText = "Not enough money";
+    DD1.disabled = true;
+  }
 }
 function player2DD() {
-  player2DDActive = true;
-  p2W -= p2CB;
-  p2Wallet.innerText = p2W;
-  p2CB *= 2;
-  p2Bet.innerText = p2CB;
-  player2Hit();
-  player2Stay();
+  if (p2W - p1CB > 0) {
+    player2DDActive = true;
+    p2W -= p2CB;
+    p2Wallet.innerText = p2W;
+    p2CB *= 2;
+    p2Bet.innerText = p2CB;
+    player2Hit();
+    player2Stay();
+  } else {
+    p2Mes.innerText = "Not enough money";
+    DD2.disabled = true;
+  }
 }
 
 function dealerStay() {
