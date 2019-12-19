@@ -701,13 +701,13 @@ function player2Play() {
 }
 
 function player1CheckInsurance() {
-  if (dcard1.value === 11 && dealerHand.value.length === 2) {
+  if (dealerHand.value[0] === 11 && dealerHand.value.length === 2) {
     ins1.disabled = false;
   }
 }
 
 function player2CheckInsurance() {
-  if (dcard1.value === 11 && dealerHand.value.length === 2) {
+  if (dealerHand.value[0] === 11 && dealerHand.value.length === 2) {
     ins2.disabled = false;
   }
 }
@@ -789,7 +789,7 @@ function dealerStay() {
   isDealerStay = false;
   isRoundEnd = true;
   checkWin();
-  setTimeout(refresh, 4000);
+  setTimeout(refresh, 3000);
 }
 
 function player1Stay() {
