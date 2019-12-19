@@ -16,3 +16,5 @@ Click player 2 bet before clicking play in order to add player 2 to the game.
 Potential upcoming features:
 Adding split functionality to the game.
 Adding additional players.
+
+https://objective-haibt-bf2984.netlify.com/
