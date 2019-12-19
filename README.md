@@ -17,4 +17,4 @@ Potential upcoming features:
 Adding split functionality to the game.
 Adding additional players.
 
-https://objective-haibt-bf2984.netlify.com/
+https://flamboyant-torvalds-80fa0b.netlify.com/

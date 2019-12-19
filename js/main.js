@@ -754,18 +754,6 @@ function player2PayoutInsurance() {
     p2Wallet.innerText = p2W;
   }
 }
-// payout insurance
-//     calculate appropriate amount
-//     add amount to wallet
-//     change game active to no
-//     render
-
-// insurance
-//     pop insurance button
-//     if dealer has blackjack
-//     match bet amount and reduce wallet
-//     call payout insurance
-//     render
 
 function player1DD() {
   player1DDActive = true;
