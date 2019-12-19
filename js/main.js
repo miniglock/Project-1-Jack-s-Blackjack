@@ -638,8 +638,8 @@ function betP1() {
 function betP2() {
   if (p2W === 0) {
     bet2.disabled = true;
+    return;
   }
-  return;
   p2Mes.innerText = "";
   p2CB += 5;
   p2W -= 5;
@@ -671,6 +671,9 @@ function player1Play() {
   stay1.disabled = false;
   bet2.disabled = true;
   shuffle();
+  player1AceOr1();
+  player2AceOr1();
+  dealerAceOr1();
   render();
   player1Blackjack();
 }
