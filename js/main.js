@@ -453,6 +453,9 @@ let isPlayer2NotBlackjack = true;
 let player1DDActive = false;
 let player2DDActive = false;
 let isDealerBusted = false;
+let player1InsuranceIsActive = false;
+let player2InsuranceIsActive = false;
+let isRoundEnd = false;
 // /*----- cached DOM element references -----*/
 
 let dealerCards = document.getElementById("dc");
@@ -493,7 +496,7 @@ document.getElementById("stay1").addEventListener("click", player1Stay);
 document.getElementById("DD1").addEventListener("click", player1DD);
 document.getElementById("hit1").addEventListener("click", player1Hit);
 document.getElementById("bet1").addEventListener("click", betP1);
-// document.getElementById("ins1").addEventListener("click", insurance);
+document.getElementById("ins1").addEventListener("click", player1Insurance);
 document.getElementById("play1").addEventListener("click", player1Play);
 
 // // p2 buttons
@@ -501,7 +504,7 @@ document.getElementById("stay2").addEventListener("click", player2Stay);
 document.getElementById("DD2").addEventListener("click", player2DD);
 document.getElementById("hit2").addEventListener("click", player2Hit);
 document.getElementById("bet2").addEventListener("click", betP2);
-// document.getElementById("ins2").addEventListener("click");
+document.getElementById("ins2").addEventListener("click", player2Insurance);
 document.getElementById("play2").addEventListener("click", player2Play);
 
 // /*----- functions -----*/
@@ -663,17 +666,23 @@ function dealerPlay() {
 }
 
 function player1Play() {
+  player1InsuranceIsActive = false;
+  player2InsuranceIsActive = false;
   bet1.disabled = true;
   play1.disabled = true;
   DD1.disabled = false;
-  ins1.disabled = false;
   hit1.disabled = false;
   stay1.disabled = false;
   bet2.disabled = true;
+  if (isRoundEnd) {
+    dealerTotal = 0;
+    isRoundEnd = false;
+  }
   shuffle();
   player1AceOr1();
   player2AceOr1();
   dealerAceOr1();
+  player1CheckInsurance();
   render();
   player1Blackjack();
 }
@@ -683,15 +692,71 @@ function player2Play() {
     bet2.disabled = true;
     play2.disabled = true;
     DD2.disabled = false;
-    ins2.disabled = false;
     hit2.disabled = false;
     stay2.disabled = false;
     player2Blackjack();
+    player2CheckInsurance();
     render();
   }
 }
 
-// function insurance() {}
+function player1CheckInsurance() {
+  if (dcard1.value === 11 && dealerHand.value.length === 2) {
+    ins1.disabled = false;
+  }
+}
+
+function player2CheckInsurance() {
+  if (dcard1.value === 11 && dealerHand.value.length === 2) {
+    ins2.disabled = false;
+  }
+}
+
+function player1Insurance() {
+  p1W -= p1CB;
+  p1Wallet.innerText = p1W;
+  p1CB *= 2;
+  p1Bet.innerText = p1CB;
+  ins1.disabled = true;
+  DD1.disabled = true;
+  player1InsuranceIsActive = true;
+}
+
+function player2Insurance() {
+  p2W -= p2CB;
+  p2Wallet.innerText = p2W;
+  p2CB *= 2;
+  p2Bet.innerText = p2CB;
+  ins2.disabled = true;
+  DD2.disabled = true;
+  player2InsuranceIsActive = true;
+}
+function player1PayoutInsurance() {
+  if (
+    player1InsuranceIsActive &&
+    dealerTotal === 21 &&
+    dealerHand.value.length === 2
+  ) {
+    p1W += p1CB;
+    p1Wallet.innerText = p1W;
+  }
+}
+function player2PayoutInsurance() {
+  if (
+    player2InsuranceIsActive &&
+    dealerTotal === 21 &&
+    dealerHand.value.length === 2
+  ) {
+    p2W += p2CB;
+    p2Wallet.innerText = p2W;
+  }
+}
+// payout insurance
+//     calculate appropriate amount
+//     add amount to wallet
+//     change game active to no
+//     render
+
 // insurance
 //     pop insurance button
 //     if dealer has blackjack
@@ -722,6 +787,7 @@ function dealerStay() {
   console.log("dealer stays");
   console.log(dealerHand);
   isDealerStay = false;
+  isRoundEnd = true;
   checkWin();
   setTimeout(refresh, 4000);
 }
@@ -780,12 +846,6 @@ function player2Blackjack() {
   }
 }
 
-// payout insurance
-//     calculate appropriate amount
-//     add amount to wallet
-//     change game active to no
-//     render
-
 function checkWin() {
   if (
     (p1Total < 22 &&
@@ -823,9 +883,11 @@ function checkWin() {
   }
   if (p1Total < dealerTotal && dealerTotal < 22) {
     p1Mes.innerText = `Player 1 Lost`;
+    player1PayoutInsurance();
   }
   if (p2Total < dealerTotal && dealerTotal < 22) {
     p2Mes.innerText = `Player 2 Lost`;
+    player2PayoutInsurance();
   }
 }
 
@@ -851,8 +913,11 @@ function render() {
   player1Total.innerText = p1Total;
   p2Total = player2Cards.value.reduce((a, b) => a + b, 0);
   player2Total.innerText = p2Total;
-  dTotal.innerText = dealerTotal;
-
+  if (dealerTotal === 0) {
+    dTotal.innerText = "";
+  } else {
+    dTotal.innerText = dealerTotal;
+  }
   if (p1Total > 21 && isPlayer1NotBusted) {
     p1Mes.innerText = `Player 1 Busted`;
     player1Lose();
