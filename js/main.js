@@ -592,6 +592,8 @@ function deal() {
   deck.shift();
   if (p2CB === 0) {
     p2Mes.innerText = "Too late. Join next time";
+  } else if (p2CB > 0) {
+    p2Mes.innerText = "";
   }
   if (p2CB > 0) {
     player2Cards.value.push(deck[0].value);
