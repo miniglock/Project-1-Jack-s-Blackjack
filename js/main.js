@@ -756,7 +756,7 @@ function player2PayoutInsurance() {
 }
 
 function player1DD() {
-  if (p1W - p1CB > 0) {
+  if (p1W - p1CB >= 0) {
     player1DDActive = true;
     p1W -= p1CB;
     p1Wallet.innerText = p1W;
@@ -770,7 +770,7 @@ function player1DD() {
   }
 }
 function player2DD() {
-  if (p2W - p1CB > 0) {
+  if (p2W - p1CB >= 0) {
     player2DDActive = true;
     p2W -= p2CB;
     p2Wallet.innerText = p2W;
