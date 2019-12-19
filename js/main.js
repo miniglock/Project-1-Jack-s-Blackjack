@@ -621,6 +621,10 @@ function shuffle() {
 }
 
 function betP1() {
+  if (p1W === 0) {
+    bet1.disabled = true;
+    return;
+  }
   p1Mes.innerText = "";
   p1CB += 5;
   p1W -= 5;
@@ -629,20 +633,18 @@ function betP1() {
   if (p1CB > 0) {
     play1.disabled = false;
   }
-  if (p1W === 0) {
-    bet1.disabled = true;
-  }
 }
 
 function betP2() {
+  if (p2W === 0) {
+    bet2.disabled = true;
+  }
+  return;
   p2Mes.innerText = "";
   p2CB += 5;
   p2W -= 5;
   p2Bet.innerText = p2CB;
   p2Wallet.innerText = p2W;
-  if (p2W === 0) {
-    bet2.disabled = true;
-  }
 }
 
 function dealerPlay() {
@@ -712,13 +714,6 @@ function player2DD() {
   player2Hit();
   player2Stay();
 }
-// double down
-//     pop double down button
-//     if yes double player current bet
-//     reduce player wallet by player bet amount
-//     call hit
-//     call stay
-//     render
 
 function dealerStay() {
   console.log("dealer stays");
@@ -788,15 +783,6 @@ function player2Blackjack() {
 //     change game active to no
 //     render
 
-// payout double down
-//     calculate appropriate amount
-//     add amount to wallet
-//     change game active to no
-//     render
-
-// tie
-//     if player card total === dealer card total || player && dealer bust increase wallet by current bet
-//     render
 function checkWin() {
   if (
     (p1Total < 22 &&
