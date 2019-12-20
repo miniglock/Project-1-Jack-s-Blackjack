@@ -17,4 +17,4 @@ Potential upcoming features:
 Adding split functionality to the game.
 Adding additional players.
 
-https://vigilant-kepler-cb907f.netlify.com
+https://vigilant-goodall-e5f7ab.netlify.com/
